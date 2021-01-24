@@ -5,27 +5,19 @@ from django_registration.forms import RegistrationForm
     
 class NewProjectForm(forms.ModelForm):
     class Meta:
-        model = Image
+        model = Project
         exclude = ['pub_date', 'Developer', 'developer_profile']
-      
+        widgets = {
+          'project_description': forms.Textarea(attrs={'rows':4, 'cols':10,}),
+        }
         
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['photo','bio']
-
-class UserUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        exclude = ['user']
-
-
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         exclude = ['user']
-        
-class CommentForm(forms.ModelForm):
+        widgets = {
+          'bio': forms.Textarea(attrs={'rows':2, 'cols':10,}),
+        }]
     class Meta:
         model = Comment
         exclude = ['pub_date', 'developer']
