@@ -2,12 +2,14 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http  import HttpResponse,Http404,HttpResponseRedirect
 import datetime as dt
 from django.contrib.auth.decorators import login_required
+from .models import Project
+from .forms import ProjectForm,RegistrationForm
 
 # Create your views here.
 def register(request):
     if request.method=="POST":
         form=RegistrationForm(request.POST)
-        profileForm=ProfileForm(request.POST, request.FILES)
+        profileForm=ProjectForm(request.POST, request.FILES)
         if form.is_valid() and profileForm.is_valid():
             username=form.cleaned_data.get('username')
             user=form.save()
@@ -18,12 +20,12 @@ def register(request):
         return redirect('login')
     else:
         form= RegistrationForm()
-        profileForm=ProfileForm()
+        profileForm=ProjectForm()
     context={
         'form':form,
         'profileForm': profileForm
     }
-    return render(request, 'registration/registration.html', context)
+    return render(request, 'django_registration/registration_form.html', context)
 
 
 
