@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect,get_object_or_404
+from django.http  import HttpResponse,Http404,HttpResponseRedirect
+import datetime as dt
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def register(request):
@@ -21,3 +24,24 @@ def register(request):
         'profileForm': profileForm
     }
     return render(request, 'registration/registration.html', context)
+
+
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        useForm=UserUpdateForm(request.POST, instance=request.user)
+        profileForm=ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if useForm.is_valid() and profileForm.is_valid():
+            useForm.save()
+            profileForm.save()
+            messages.success(request, f'Your account has been updated!')
+        return redirect('profile')
+    else:
+        useForm=UserUpdateForm(instance=request.user.profile)
+        profileForm=ProfileUpdateForm(instance=request.user.profile)
+    context={
+        'useForm':useForm,
+        'profileForm':profileForm
+    }
+    return render(request, 'registration/profile.html', context)
