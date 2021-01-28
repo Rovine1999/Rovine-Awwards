@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http  import HttpResponse,Http404,HttpResponseRedirect
 import datetime as dt
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from .models import Project,Profile
 from .forms import ProjectForm,RegistrationForm,ProfileUpdateForm
 from django.views.generic import (ListView,DetailView,CreateView,UpdateView,DeleteView)
@@ -12,9 +13,18 @@ from django.views.generic import (ListView,DetailView,CreateView,UpdateView,Dele
 @login_required
 def awwards(request):
     images = Project.objects.all()
-   
-        
+    
     return render(request, 'awwards.html',{'images':images})
+
+
+
+@login_required
+def home(request):
+    images = Project.objects.all()
+    
+    return render(request, 'home.html',{'images':images})
+    
+
 
 def register(request):
     if request.method=="POST":
@@ -92,8 +102,7 @@ def search_awward(request):
 
 
 
-class PostListView(ListView):
+class ProjectCreateView(LoginRequiredMixin,CreateView):
     model = Project
-    template_name = 'index.html'
-    context_object_name = 'posts'
-    ordering = ['-pub_date']
+    fields = ['title','description', 'projects','url']
+    template_name = 'post_form.html'

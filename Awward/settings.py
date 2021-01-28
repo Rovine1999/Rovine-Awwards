@@ -18,8 +18,14 @@ import dj_database_url
 from decouple import config,Csv
 import sys
 
+
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +46,7 @@ INSTALLED_APPS = [
     'myawwards',
     'bootstrap3',
     'crispy_forms',
+    'star_ratings',
     'cloudinary',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -57,9 +64,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Awward.urls'
+#STAR_RATINGS_RATING_MODEL = 'myawward.MyRating'
+
+STAR_RATINGS_OBJECT_ID_PATTERN = '[a-z0-9]{32}'
 
 TEMPLATES = [
     {
@@ -72,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'django.core.context_processors.request', 
             ],
         },
     },
@@ -98,6 +110,24 @@ if config('MODE')=="dev":
        }
        
    }
+
+# production
+else:
+   DATABASES = {
+       'default': dj_database_url.config(
+           default=config('DATABASE_URL')
+       )
+   }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+
+
+STAR_RATINGS_RERATE = False
+# STAR_RATINGS_RANGE
+STAR_RATINGS_ANONYMOUS = True
 
 
 # Password validation
@@ -137,6 +167,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -144,5 +176,14 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-LOGIN_REDIRECT_URL = 'profile'
-LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'awwards'
+LOGIN_URL = 'awwards'
+
+cloudinary.config( 
+    cloud_name="rovine",
+    api_key="799646938389898",
+    api_secret="MGXWduggGOXTCtFBRVX43wEXDpM"
+)
+
+# Configure Django App for Heroku.
+django_heroku.settings(locals())

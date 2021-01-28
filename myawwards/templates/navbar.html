@@ -16,16 +16,11 @@
       <a class="navbar-brand" href="/">Wanjala Awward</a>
       <a class="navbar-brand" href="{%url 'awwards' %}">Projects</a>
       <a class="navbar-brand" href="">Home</a>
-      <!-- Search form -->
-      <div class="col-sm-4 col-md-4 navbar-right">
-
-        <form class="navbar-form" role="search" action="">
-
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search Awward" name="awward">
-            <div class="input-group-btn">
-              <button class="btn btn-warning" type="submit"><i class="glyphicon glyphicon-search"></i>search</button>
-
+      <div class="navbar-start">
+        <a style="color: darkgreen;" class="navbar-item" href="{% url 'post'%}">
+          Submit Your Project
+        </a>
+     
             </div>
 
           </div>
