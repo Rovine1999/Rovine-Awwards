@@ -30,8 +30,8 @@ class Project(models.Model):
     
     
     @classmethod
-    def get_by_author(cls, author):
-        projects = cls.objects.filter(author=author)
+    def get_by_developer(cls, user):
+        projects = cls.objects.filter(user=user)
         return projects
     
     
@@ -67,7 +67,8 @@ class Profile(models.Model):
         return self.bio
 
 
-        
+# class MyRating(AbstractBaseRating):
+#  object_id = models.CharField(max_length=10)
     
     
     
